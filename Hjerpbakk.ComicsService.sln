@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hjerpbakk.ComicService", "Hjerpbakk.ComicService\Hjerpbakk.ComicService.csproj", "{27C11E4B-C794-4E92-8B7F-AD2E89EE99B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hjerpbakk.ComicsService", "Hjerpbakk.ComicsService\Hjerpbakk.ComicsService.csproj", "{27C11E4B-C794-4E92-8B7F-AD2E89EE99B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
