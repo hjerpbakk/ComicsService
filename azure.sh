@@ -8,30 +8,30 @@ set -e
 az acr login --name dipsbot
 # az acr list --resource-group kitchen-responsible-rg --query "[].{acrLoginServer:loginServer}" --output table
 # -> dipsbot.azurecr.io
-docker tag kitchen-responsible dipsbot.azurecr.io/kitchen-responsible
+docker tag comics dipsbot.azurecr.io/comics
 
 # Run container locally
 # docker run -p 5000:80 kitchen-responsible
-docker push dipsbot.azurecr.io/kitchen-responsible
+docker push dipsbot.azurecr.io/comics
 
 # Run in Azure Container Instances
 # az acr show --name dipsbot --query loginServer
 # az acr credential show --name dipsbot --query "passwords[0].value"
-az container delete --name kitchen-responsible-service --resource-group kitchen-responsible-rg --yes
-az container create --name kitchen-responsible-service --image dipsbot.azurecr.io/kitchen-responsible --cpu 1 --memory 1 --registry-password $AZUREPW --ip-address public -g kitchen-responsible-rg
+az container delete --name comics --resource-group kitchen-responsible-rg --yes
+az container create --name comics-service --image dipsbot.azurecr.io/comics --cpu 1 --memory 1 --registry-password $AZUREPW --ip-address public -g kitchen-responsible-rg
 
-container_status=$(az container show --name kitchen-responsible-service --resource-group kitchen-responsible-rg --query state)
+container_status=$(az container show --name comics-service --resource-group kitchen-responsible-rg --query state)
 echo $container_status
 while [ $container_status != "\"Running\"" ]
 do 
     sleep 5
-    container_status=$(az container show --name kitchen-responsible-service --resource-group kitchen-responsible-rg --query state)
+    container_status=$(az container show --name comics-service --resource-group kitchen-responsible-rg --query state)
     echo $container_status
 done
 
 # Uploud IP to Blob Storage
-touch ./kitchen-service.txt
+touch ./comics-service.txt
 # Needs. AZURE_STORAGE_CONNECTION_STRING environment variable
-az container show --name kitchen-responsible-service --resource-group kitchen-responsible-rg --query ipAddress.ip > ./kitchen-service.txt
-cat ./kitchen-service.txt
-az storage blob upload --container-name discovery --file kitchen-service.txt --name kitchen-service.txt
+az container show --name comics-service --resource-group kitchen-responsible-rg --query ipAddress.ip > ./comics-service.txt
+cat ./comics-service.txt
+az storage blob upload --container-name discovery --file comics-service.txt --name comics-service.txt
