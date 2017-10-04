@@ -38,6 +38,7 @@ namespace Hjerpbakk.ComicService
             }
 
             app.UseMvc();
+            app.UseStaticFiles();
         }
     }
 }
