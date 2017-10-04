@@ -28,6 +28,7 @@ namespace Hjerpbakk.ComicsService.Clients
                 new ComicsFeed("xkcd"),
                 new ComicsFeed("commitstrip"),
                 new ComicsFeed("redmeat"),
+                new ComicsFeed("rocky")
             };
 		}
 
