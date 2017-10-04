@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Hjerpbakk.ComicsService;
+using Hjerpbakk.ComicsService.Clients;
+using Hjerpbakk.ComicsService.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace Hjerpbakk.ComicService
 {
@@ -25,7 +29,11 @@ namespace Hjerpbakk.ComicService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
             services.AddMvc();
+
+            var configuration = ReadConfig();
+            services.AddSingleton<IReadOnlyAppConfiguration>(configuration);
             services.AddSingleton<ComicsClient>();
         }
 
@@ -40,5 +48,10 @@ namespace Hjerpbakk.ComicService
             app.UseMvc();
             app.UseStaticFiles();
         }
+
+		static AppConfiguration ReadConfig()
+		{
+			return JsonConvert.DeserializeObject<AppConfiguration>(File.ReadAllText("config.json"));
+		}
     }
 }

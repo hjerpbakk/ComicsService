@@ -13,9 +13,6 @@ az acr login --name dipsbot
 # az acr list --resource-group kitchen-responsible-rg --query "[].{acrLoginServer:loginServer}" --output table
 # -> dipsbot.azurecr.io
 docker tag $container_name $tagged_container_name
-
-# Run container locally
-# docker run -p 5000:80 kitchen-responsible
 docker push $tagged_container_name
 
 # Run in Azure Container Instances
