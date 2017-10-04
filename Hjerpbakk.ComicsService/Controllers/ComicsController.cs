@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Hjerpbakk.ComicsService.Clients;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Hjerpbakk.ComicService.Controllers
 {
@@ -12,19 +8,15 @@ namespace Hjerpbakk.ComicService.Controllers
     public class ComicsController : Controller
     {
         readonly ComicsClient comicsClient;
-        readonly IMemoryCache memoryCache;
 
-        public ComicsController(ComicsClient comicsClient, IMemoryCache memoryCache)
+        public ComicsController(ComicsClient comicsClient)
         {
             this.comicsClient = comicsClient;
-            this.memoryCache = memoryCache;
         }
 
         [HttpGet]
-        public async Task<string> Get()
-        {
-            var imageURL = await comicsClient.GetNewestComicAsync();
-            return imageURL;
-        }
+        public async Task<string> Get() => await comicsClient.GetNewestComicAsync();
+
+        // TODO: enable listing of available comics
     }
 }

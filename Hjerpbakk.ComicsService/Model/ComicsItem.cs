@@ -3,15 +3,15 @@ using System.Text.RegularExpressions;
 
 namespace Hjerpbakk.ComicsService.Model
 {
-    public struct LunchFeedItem
+    public struct ComicsItem
     {
         static readonly Regex imageURLRegex;
 
-        static LunchFeedItem() {
+        static ComicsItem() {
             imageURLRegex = new Regex("(src=\\\")(.*?)(\\\")", RegexOptions.Compiled);
         }
 
-        public LunchFeedItem(string content)
+        public ComicsItem(string content)
         {
             var matches = imageURLRegex.Matches(content);
             if (matches[0].Groups.Count != 4) {

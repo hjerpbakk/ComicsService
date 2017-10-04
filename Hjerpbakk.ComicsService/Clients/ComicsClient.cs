@@ -1,32 +1,63 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using CodeHollow.FeedReader;
 using Hjerpbakk.ComicsService.Configuration;
 using Hjerpbakk.ComicsService.Model;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Hjerpbakk.ComicsService.Clients
 {
     public class ComicsClient
     {
-        readonly string LunchFeed = "https://comics.io/lunchdb/feed/?key=";
-        readonly string CyanideAndHappiness = "https://comics.io/cyanideandhappiness/feed/?key=";
+        static readonly object lockObject = new object();
 
-        readonly string comicsioKey;
+        readonly IMemoryCache memoryCache;
+        readonly ComicsFeed[] feeds;
 
-        public ComicsClient(IReadOnlyAppConfiguration configuration)
+        int i;
+
+        public ComicsClient(IReadOnlyAppConfiguration configuration, IMemoryCache memoryCache)
         {
-            comicsioKey = configuration.ComicsioKey;
-        }
+            ComicsFeed.ComicsioKey= configuration.ComicsioKey;
+            this.memoryCache = memoryCache;
+
+            feeds = new[] {
+                new ComicsFeed("lunchdb"),
+                new ComicsFeed("cyanideandhappiness"),
+                new ComicsFeed("xkcd"),
+                new ComicsFeed("commitstrip"),
+                new ComicsFeed("redmeat"),
+            };
+		}
 
         public async Task<string> GetNewestComicAsync() {
-            var feed = await FeedReader.ReadAsync(FeedWithKey(LunchFeed));
-            var firstItem = feed.Items.First();
-            var lunchItem = new LunchFeedItem(firstItem.Description);
-            return lunchItem.ImageURL;
+            var imageURL = await GetLatestComicFromFeedAsync(feeds[i]);
+            lock (lockObject) {
+                if (++i == feeds.Length) {
+                    i = 0;
+                }
+            }
+
+            return imageURL;
         }
 
-        string FeedWithKey(string feedURL) => feedURL + comicsioKey;
+        async Task<string> GetLatestComicFromFeedAsync(ComicsFeed comicsFeed)
+		{
+            if (!memoryCache.TryGetValue(comicsFeed.Name, out string imageURL))
+            {
+                var feed = await FeedReader.ReadAsync(comicsFeed.URL);
+                var firstItem = feed.Items.First();
+                var lunchItem = new ComicsItem(firstItem.Description);
+                imageURL = lunchItem.ImageURL;
+
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(12));
+
+				memoryCache.Set(comicsFeed.Name, imageURL, cacheEntryOptions);
+            }
+
+			return imageURL;
+		}
     }
 }
