@@ -14,6 +14,7 @@ namespace Hjerpbakk.ComicsService.Clients
 
         readonly IMemoryCache memoryCache;
         readonly ComicsFeed[] feeds;
+        readonly Random random;
 
         int i;
 
@@ -30,9 +31,11 @@ namespace Hjerpbakk.ComicsService.Clients
                 new ComicsFeed("redmeat"),
                 new ComicsFeed("rocky")
             };
+
+            random = new Random();
 		}
 
-        public async Task<string> GetNewestComicAsync() {
+        public async Task<string> GetLatestComicAsync() {
             var imageURL = await GetLatestComicFromFeedAsync(feeds[i]);
             lock (lockObject) {
                 if (++i == feeds.Length) {
@@ -41,6 +44,11 @@ namespace Hjerpbakk.ComicsService.Clients
             }
 
             return imageURL;
+        }
+
+        public async Task<string> GetLatestComicFromRandomFeedAsync() {
+            var feedIndex = random.Next(feeds.Length);
+            return await GetLatestComicFromFeedAsync(feeds[feedIndex]);
         }
 
         async Task<string> GetLatestComicFromFeedAsync(ComicsFeed comicsFeed)

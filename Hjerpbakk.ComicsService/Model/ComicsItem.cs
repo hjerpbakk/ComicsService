@@ -22,5 +22,7 @@ namespace Hjerpbakk.ComicsService.Model
         }
 
         public string ImageURL { get; }
+
+        public override string ToString() => string.Format("[ComicsItem: ImageURL={0}]", ImageURL);
     }
 }

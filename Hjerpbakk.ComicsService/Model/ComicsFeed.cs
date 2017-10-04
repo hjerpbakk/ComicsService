@@ -12,5 +12,7 @@
 
         public string Name { get; }
         public string URL { get;  }
+
+        public override string ToString() => string.Format("[ComicsFeed: Name={0}, URL={1}]", Name, URL);
     }
 }

@@ -15,8 +15,10 @@ namespace Hjerpbakk.ComicService.Controllers
         }
 
         [HttpGet]
-        public async Task<string> Get() => await comicsClient.GetNewestComicAsync();
+        public async Task<string> Get() => await comicsClient.GetLatestComicAsync();
 
+		[HttpGet("random")]
+        public async Task<string> GetRandom() => await comicsClient.GetLatestComicFromRandomFeedAsync();
         // TODO: enable listing of available comics
     }
 }
