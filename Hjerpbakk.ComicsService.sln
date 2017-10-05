@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hjerpbakk.ComicsService", "Hjerpbakk.ComicsService\Hjerpbakk.ComicsService.csproj", "{27C11E4B-C794-4E92-8B7F-AD2E89EE99B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHjerpbakk.ComicsService", "TestHjerpbakk.ComicsService\TestHjerpbakk.ComicsService.csproj", "{47EF640D-10D4-4575-8395-A7A2B7B0C427}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,5 +15,9 @@ Global
 		{27C11E4B-C794-4E92-8B7F-AD2E89EE99B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27C11E4B-C794-4E92-8B7F-AD2E89EE99B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27C11E4B-C794-4E92-8B7F-AD2E89EE99B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47EF640D-10D4-4575-8395-A7A2B7B0C427}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47EF640D-10D4-4575-8395-A7A2B7B0C427}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47EF640D-10D4-4575-8395-A7A2B7B0C427}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47EF640D-10D4-4575-8395-A7A2B7B0C427}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

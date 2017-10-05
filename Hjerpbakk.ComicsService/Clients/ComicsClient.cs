@@ -36,37 +36,36 @@ namespace Hjerpbakk.ComicsService.Clients
 		}
 
         public async Task<string> GetLatestComicAsync() {
-            var imageURL = await GetLatestComicFromFeedAsync(feeds[i]);
+            var comic = await GetLatestComicFromFeedAsync(feeds[i]);
             lock (lockObject) {
                 if (++i == feeds.Length) {
                     i = 0;
                 }
             }
 
-            return imageURL;
+            return comic.ImageURL;
         }
 
         public async Task<string> GetLatestComicFromRandomFeedAsync() {
             var feedIndex = random.Next(feeds.Length);
-            return await GetLatestComicFromFeedAsync(feeds[feedIndex]);
+            return (await GetLatestComicFromFeedAsync(feeds[feedIndex])).ImageURL;
         }
 
-        async Task<string> GetLatestComicFromFeedAsync(ComicsFeed comicsFeed)
+		async Task<ComicsItem> GetLatestComicFromFeedAsync(ComicsFeed comicsFeed)
 		{
-            if (!memoryCache.TryGetValue(comicsFeed.Name, out string imageURL))
-            {
-                var feed = await FeedReader.ReadAsync(comicsFeed.URL);
-                var firstItem = feed.Items.First();
-                var lunchItem = new ComicsItem(firstItem.Description);
-                imageURL = lunchItem.ImageURL;
+			if (!memoryCache.TryGetValue(comicsFeed.Name, out ComicsItem comic))
+			{
+				var feed = await FeedReader.ReadAsync(comicsFeed.URL);
+				var firstItem = feed.Items.First();
+				comic = new ComicsItem(firstItem);
 
 				var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(12));
+					.SetAbsoluteExpiration(TimeSpan.FromHours(6));
 
-				memoryCache.Set(comicsFeed.Name, imageURL, cacheEntryOptions);
-            }
+				memoryCache.Set(comicsFeed.Name, comic, cacheEntryOptions);
+			}
 
-			return imageURL;
+			return comic;
 		}
     }
 }
