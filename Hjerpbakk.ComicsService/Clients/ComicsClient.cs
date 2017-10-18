@@ -29,6 +29,7 @@ namespace Hjerpbakk.ComicsService.Clients
 
             // TODO: Make configurable
             feeds = new[] {
+                new ComicsFeed("oatmeal"),
                 new ComicsFeed("lunchdb"),
                 new ComicsFeed("cyanideandhappiness"),
                 new ComicsFeed("xkcd"),
@@ -36,6 +37,7 @@ namespace Hjerpbakk.ComicsService.Clients
                 new ComicsFeed("redmeat"),
                 new ComicsFeed("rocky"),
                 new ComicsFeed("smbc"),
+                new ComicsFeed("abstrusegoose")
             };
 
             random = new Random();
@@ -74,7 +76,10 @@ namespace Hjerpbakk.ComicsService.Clients
 			}
 
             var feed = await feedReaderClient.ReadAsync(comicsFeed.URL);
-            var firstItem = feed.Items.First();
+            var firstItem = feed.Items.FirstOrDefault();
+            if (firstItem == null) {
+                return new ComicsItem();
+            }
             var comic = new ComicsItem(firstItem);
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()

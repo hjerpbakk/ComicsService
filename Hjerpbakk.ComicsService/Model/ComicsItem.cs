@@ -20,7 +20,20 @@ namespace Hjerpbakk.ComicsService.Model
             }
 
             ImageURL = matches[0].Groups[2].Value;
-            PublicationDate = feedItem.PublishingDate?.Date ?? ConfigurableDateTime.UtcNow.Date;
+
+            // /oatmeal/2017/9/22/
+            if (feedItem.PublishingDate.HasValue) {
+                PublicationDate = feedItem.PublishingDate.Value.Date;
+                return;
+            }
+
+            var split = feedItem.Id.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (split.Length == 4) {
+                PublicationDate = new DateTime(int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
+                return;
+            }
+
+            PublicationDate = ConfigurableDateTime.UtcNow.Date;
         }
 
         public string ImageURL { get; }
