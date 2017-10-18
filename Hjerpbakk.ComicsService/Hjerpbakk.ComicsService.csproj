@@ -9,6 +9,7 @@
     <Folder Include="Model\" />
     <Folder Include="Clients\" />
     <Folder Include="Configuration\" />
+    <Folder Include="Cache\" />
   </ItemGroup>
 
   <ItemGroup>

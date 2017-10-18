@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CodeHollow.FeedReader;
+using Hjerpbakk.ComicsService.Cache;
 using Hjerpbakk.ComicsService.Configuration;
 using Hjerpbakk.ComicsService.Model;
 using Microsoft.Extensions.Caching.Memory;
@@ -10,39 +10,53 @@ namespace Hjerpbakk.ComicsService.Clients
 {
     public class ComicsClient
     {
+        const double DayCutoff = 4D;
+
         static readonly object lockObject = new object();
 
-        readonly IMemoryCache memoryCache;
+        readonly ICache memoryCache;
+        readonly IFeedReaderClient feedReaderClient;
         readonly ComicsFeed[] feeds;
         readonly Random random;
 
         int i;
 
-        public ComicsClient(IReadOnlyAppConfiguration configuration, IMemoryCache memoryCache)
+        public ComicsClient(IReadOnlyAppConfiguration configuration, ICache memoryCache, IFeedReaderClient feedReaderClient)
         {
             ComicsFeed.ComicsioKey= configuration.ComicsioKey;
             this.memoryCache = memoryCache;
+            this.feedReaderClient = feedReaderClient;
 
+            // TODO: Make configurable
             feeds = new[] {
                 new ComicsFeed("lunchdb"),
                 new ComicsFeed("cyanideandhappiness"),
                 new ComicsFeed("xkcd"),
                 new ComicsFeed("commitstrip"),
                 new ComicsFeed("redmeat"),
-                new ComicsFeed("rocky")
+                new ComicsFeed("rocky"),
+                new ComicsFeed("smbc"),
             };
 
             random = new Random();
 		}
 
         public async Task<string> GetLatestComicAsync() {
-            var comic = await GetLatestComicFromFeedAsync(feeds[i]);
-            lock (lockObject) {
-                if (++i == feeds.Length) {
-                    i = 0;
-                }
-            }
-
+            var today = ConfigurableDateTime.UtcNow.Date;
+            ComicsItem comic;
+            var breakCounter = 0;
+            do
+            {
+				comic = await GetLatestComicFromFeedAsync(feeds[i]);
+				lock (lockObject)
+				{
+                    ++breakCounter;
+					if (++i == feeds.Length)
+					{
+						i = 0;
+					}
+				}
+            } while (comic.PublicationDate + TimeSpan.FromDays(DayCutoff) < today && breakCounter < feeds.Length);
             return comic.ImageURL;
         }
 
@@ -53,18 +67,20 @@ namespace Hjerpbakk.ComicsService.Clients
 
 		async Task<ComicsItem> GetLatestComicFromFeedAsync(ComicsFeed comicsFeed)
 		{
-			if (!memoryCache.TryGetValue(comicsFeed.Name, out ComicsItem comic))
+            var cachedItem = memoryCache.TryGetValue<ComicsItem>(comicsFeed.Name);
+            if (cachedItem.hit) 
 			{
-				var feed = await FeedReader.ReadAsync(comicsFeed.URL);
-				var firstItem = feed.Items.First();
-				comic = new ComicsItem(firstItem);
-
-				var cacheEntryOptions = new MemoryCacheEntryOptions()
-					.SetAbsoluteExpiration(TimeSpan.FromHours(6));
-
-				memoryCache.Set(comicsFeed.Name, comic, cacheEntryOptions);
+                return cachedItem.value;
 			}
 
+            var feed = await feedReaderClient.ReadAsync(comicsFeed.URL);
+            var firstItem = feed.Items.First();
+            var comic = new ComicsItem(firstItem);
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromHours(6));
+
+            memoryCache.Set(comicsFeed.Name, comic, cacheEntryOptions);
 			return comic;
 		}
     }

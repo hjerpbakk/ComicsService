@@ -15,16 +15,16 @@ namespace Hjerpbakk.ComicsService.Model
         public ComicsItem(FeedItem feedItem)
         {
             var matches = imageURLRegex.Matches(feedItem.Description);
-            if (matches[0].Groups.Count != 4) {
+            if (matches.Count == 0 || matches[0].Groups.Count != 4) {
                 throw new Exception($"Could not parse {feedItem.Description}");
             }
 
             ImageURL = matches[0].Groups[2].Value;
-            PublicationDateTime = feedItem.PublishingDate ?? DateTime.UtcNow;
+            PublicationDate = feedItem.PublishingDate?.Date ?? ConfigurableDateTime.UtcNow.Date;
         }
 
         public string ImageURL { get; }
-        public DateTime PublicationDateTime { get; }
+        public DateTime PublicationDate { get; }
 
         public override string ToString() => string.Format("[ComicsItem: ImageURL={0}]", ImageURL);
     }

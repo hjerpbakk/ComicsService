@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Hjerpbakk.ComicsService;
+using Hjerpbakk.ComicsService.Cache;
 using Hjerpbakk.ComicsService.Clients;
 using Hjerpbakk.ComicsService.Configuration;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +35,8 @@ namespace Hjerpbakk.ComicService
 
             var configuration = ReadConfig();
             services.AddSingleton<IReadOnlyAppConfiguration>(configuration);
+            services.AddSingleton<ICache, Cache>();
+            services.AddSingleton<IFeedReaderClient, FeedReaderClient>();
             services.AddSingleton<ComicsClient>();
         }
 
