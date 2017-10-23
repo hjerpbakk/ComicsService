@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <ReleaseVersion>1.0.0.0</ReleaseVersion>
 	<Version>1.0.0.0</Version>
+	<ApplicationInsightsResourceId>/subscriptions/33ce3627-590f-4187-b3f9-5127ea1f6b5a/resourcegroups/dipsbot/providers/microsoft.insights/components/dips-trondheim-comics-service</ApplicationInsightsResourceId>
+	<ApplicationInsightsAnnotationResourceId>/subscriptions/33ce3627-590f-4187-b3f9-5127ea1f6b5a/resourcegroups/dipsbot/providers/microsoft.insights/components/dips-trondheim-comics-service</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +26,10 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
