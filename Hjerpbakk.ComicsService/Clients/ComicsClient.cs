@@ -62,6 +62,7 @@ namespace Hjerpbakk.ComicsService.Clients
             return comic.ImageURL;
         }
 
+        // TODO: Only fetch new comics
         public async Task<string> GetLatestComicFromRandomFeedAsync() {
             var feedIndex = random.Next(feeds.Length);
             return (await GetLatestComicFromFeedAsync(feeds[feedIndex])).ImageURL;
