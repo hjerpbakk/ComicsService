@@ -62,6 +62,7 @@ namespace Hjerpbakk.ComicsService.Clients
             return comic.ImageURL;
         }
 
+        // TODO: Add fallback comic hosted by the service
         // TODO: Only fetch new comics
         public async Task<string> GetLatestComicFromRandomFeedAsync() {
             var feedIndex = random.Next(feeds.Length);
