@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hjerpbakk.ComicsService.Cache;
@@ -43,7 +44,7 @@ namespace Hjerpbakk.ComicsService.Clients
             random = new Random();
 		}
 
-        public async Task<string> GetLatestComicAsync() {
+        public async Task<string> GetLatestComicFromFeedsRoundRobinAsync() {
             var today = ConfigurableDateTime.UtcNow.Date;
             ComicsItem comic;
             var breakCounter = 0;
@@ -69,6 +70,10 @@ namespace Hjerpbakk.ComicsService.Clients
             return (await GetLatestComicFromFeedAsync(feeds[feedIndex])).ImageURL;
         }
 
+        public IEnumerable<FeedInfo> GetFeeds() {
+            return feeds.Select(f => new FeedInfo(f.Name, f.LastPublished));
+        }
+
 		async Task<ComicsItem> GetLatestComicFromFeedAsync(ComicsFeed comicsFeed)
 		{
             var cachedItem = memoryCache.TryGetValue<ComicsItem>(comicsFeed.Name);
@@ -82,8 +87,9 @@ namespace Hjerpbakk.ComicsService.Clients
             if (firstItem == null) {
                 return new ComicsItem();
             }
-            var comic = new ComicsItem(firstItem);
 
+            var comic = new ComicsItem(firstItem);
+            comicsFeed.LastPublished = comic.PublicationDate;
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromHours(6));
 

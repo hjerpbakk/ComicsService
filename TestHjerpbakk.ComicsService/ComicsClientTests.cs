@@ -95,25 +95,25 @@ namespace TestHjerpbakk.ComicsService
             items.feedReaderClient.Setup(f => f.ReadAsync(It.IsRegex("smbc"))).ReturnsAsync(feeds[6]);
             var comicsClient = items.comicsClient;
 
-            var comic = await comicsClient.GetLatestComicAsync();
+            var comic = await comicsClient.GetLatestComicFromFeedsRoundRobinAsync();
             Assert.Contains("lunchdb", comic);
 
-			comic = await comicsClient.GetLatestComicAsync();
+			comic = await comicsClient.GetLatestComicFromFeedsRoundRobinAsync();
 			Assert.Contains("cyanideandhappiness", comic);
 
-			comic = await comicsClient.GetLatestComicAsync();
+			comic = await comicsClient.GetLatestComicFromFeedsRoundRobinAsync();
 			Assert.Contains("xkcd", comic);
 
-			comic = await comicsClient.GetLatestComicAsync();
+			comic = await comicsClient.GetLatestComicFromFeedsRoundRobinAsync();
 			Assert.Contains("commitstrip", comic);
 
-			comic = await comicsClient.GetLatestComicAsync();
+			comic = await comicsClient.GetLatestComicFromFeedsRoundRobinAsync();
 			Assert.Contains("lunchdb", comic);
 
-			comic = await comicsClient.GetLatestComicAsync();
+			comic = await comicsClient.GetLatestComicFromFeedsRoundRobinAsync();
 			Assert.Contains("cyanideandhappiness", comic);
 
-			comic = await comicsClient.GetLatestComicAsync();
+			comic = await comicsClient.GetLatestComicFromFeedsRoundRobinAsync();
 			Assert.Contains("xkcd", comic);
         }
 

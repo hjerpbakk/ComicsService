@@ -1,6 +1,8 @@
-﻿namespace Hjerpbakk.ComicsService.Model
+﻿using System;
+
+namespace Hjerpbakk.ComicsService.Model
 {
-    public struct ComicsFeed
+    public class ComicsFeed
     {
         public ComicsFeed(string name)
         {
@@ -11,7 +13,8 @@
         public static string ComicsioKey { private get; set; }
 
         public string Name { get; }
-        public string URL { get;  }
+        public string URL { get; }
+        public DateTime? LastPublished { get; set; }
 
         public override string ToString() => string.Format("[ComicsFeed: Name={0}, URL={1}]", Name, URL);
     }
